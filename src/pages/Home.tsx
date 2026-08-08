@@ -1,8 +1,6 @@
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import "./App.css";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import BudgetOverview from "./components/BudgetOverview";
+import BudgetOverview from "../components/BudgetOverview";
 
 function Home() {
   return (
