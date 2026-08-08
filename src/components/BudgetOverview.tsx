@@ -1,9 +1,8 @@
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import type { HomeData, HomeDataDTO } from "../types/HomeType";
+import type { HomeType } from "../types/HomeType";
 import { apiCall } from "../service/apiService.ts";
-import { preconnect } from "react-dom";
 
 function BudgetOverview() {
   const today: dayjs.Dayjs = dayjs();
@@ -16,27 +15,17 @@ function BudgetOverview() {
   console.log("Start date: ", startDate);
   console.log("End date: ", endDate);
 
-  const [homeData, setHomeData] = useState<HomeData | null>(null);
+  const [homeData, setHomeData] = useState<HomeType | null>(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
     (async (startDate, endDate) => {
-      const data: HomeDataDTO = await apiCall<HomeDataDTO>(
+      const data: HomeType = await apiCall<HomeType>(
         `http://localhost:8080/api/users/test_user/home/?startDate=${startDate}&endDate=${endDate}`,
         "GET",
       );
-      // CHANGE TO CONFIG IN BACKEND DTO RETREIVED HERE
-      // Also change to have one for each saving, roth, and investments
-      const savingSplit: number = 0.16;
-      const pd: HomeData = data;
-      pd.allocatable = pd.income - pd.bills;
-      pd.HYSA = pd.allocatable * savingSplit;
-      pd.rothIRA = pd.allocatable * savingSplit;
-      pd.savings = pd.allocatable * savingSplit;
-      pd.budget = pd.allocatable - pd.HYSA - pd.savings - pd.investments;
-      pd.remainingBudget = pd.budget - pd.expenses;
-      if (isMounted) setHomeData(pd);
+      if (isMounted) setHomeData(data);
     })(startDate, endDate);
     return () => {
       isMounted = false;
@@ -93,7 +82,7 @@ function BudgetOverview() {
           <tr>
             <th scope="row">Roth IRA</th>
             <td>352.56</td>
-            <td>{homeData?.rothIRA.toFixed(2) ?? "Null"}</td>
+            <td>{homeData?.rothIra.toFixed(2) ?? "Null"}</td>
           </tr>
           <tr>
             <th scope="row">Investing</th>

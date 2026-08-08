@@ -3,7 +3,7 @@ export type HomeDataDTO = {
   bills: number;
   allocatable: number;
   HYSA: number;
-  rothIRA: number;
+  rothIra: number;
   savings: number;
   investments: number;
   budget: number;
