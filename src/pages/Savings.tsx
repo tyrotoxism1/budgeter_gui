@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import type { Transaction } from "../types/TransactionType";
 import { apiCall } from "../service/apiService.ts";
 
-function Transactions() {
+function Savings() {
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 10 },
     { field: "title", headerName: "Title", width: 150 },
@@ -24,7 +24,7 @@ function Transactions() {
     let isMounted = true;
     (async () => {
       const data: Transaction = await apiCall<Transaction>(
-        `http://localhost:8080/api/users/test_user/transactions/transactionType/expenses`,
+        `http://localhost:8080/api/users/test_user/transactions/transactionType/savings`,
         "GET",
       );
       if (isMounted) setTransactions(data);
@@ -52,4 +52,4 @@ function Transactions() {
   );
 }
 
-export default Transactions;
+export default Savings;
