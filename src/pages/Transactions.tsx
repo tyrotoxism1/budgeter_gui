@@ -1,12 +1,26 @@
 import { DataGrid } from "@mui/x-data-grid";
+import { DatePicker } from "@mui/x-date-pickers";
 import type { GridColDef } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import type { Transaction } from "../types/TransactionType";
 import { apiCall } from "../service/apiService.ts";
 import Select from "@mui/material/Select";
 import type { SelectChangeEvent } from "@mui/material/Select";
-import { MenuItem, Button } from "@mui/material";
-import AddTransacitonModal from "../components/AddTransactionModal.tsx";
+import { MenuItem, Button, Box } from "@mui/material";
+import Modal from "@mui/material/Modal";
+import dayjs from "dayjs";
+
+const modalStyle = {
+  position: "absolute" as const,
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper", // Accesses theme values automatically
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4, // Represents theme.spacing(4)
+  borderRadius: 2,
+};
 
 function Transactions() {
   const columns: GridColDef[] = [
@@ -20,6 +34,11 @@ function Transactions() {
     { field: "tags", headerName: "Tags", width: 100 },
   ];
 
+  const [transactionDate, setTransactionDate] = useState(dayjs());
+  function submit() {
+    console.log("Transaction Date: " + transactionDate);
+  }
+  const today: dayjs.Dayjs = dayjs();
   const [showAddTransaction, setShowAddTransaction] = useState(false);
   const [transactions, setTransactions] = useState<Array<Transaction> | null>(
     null,
@@ -50,7 +69,12 @@ function Transactions() {
     <div>
       <h1>Transactions </h1>
       <div>
-        <button onClick={() => setShowAddTransaction(true)}>
+        <button
+          onClick={() => {
+            setShowAddTransaction(true);
+            console.log("Button clicked");
+          }}
+        >
           Add Transaction
         </button>
         <Select
@@ -70,11 +94,33 @@ function Transactions() {
         </Select>
       </div>
       <div>
-        <div>
-          {showAddTransaction ? (
-            <AddTransacitonModal onClose={() => setShowAddTransaction(false)} />
-          ) : null}
-        </div>
+        <Modal
+          open={showAddTransaction}
+          onClose={() => setShowAddTransaction(false)}
+        >
+          <Box sx={modalStyle}>
+            <label>Title</label>
+            <input type="text" />
+            <label>Amount</label>
+            <input type="number" />
+            <DatePicker
+              label={"Date"}
+              defaultValue={today}
+              onChange={(newValue) => {
+                setTransactionDate(newValue);
+              }}
+            />
+
+            <div>
+              <button onClick={() => setShowAddTransaction(false)}>
+                Cancel
+              </button>
+              <button onClick={submit}>Submit</button>
+            </div>
+          </Box>
+        </Modal>
+      </div>
+      <div>
         <DataGrid
           rows={transactions}
           columns={columns}
